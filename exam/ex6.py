@@ -9,24 +9,21 @@ fontScale = 3
 color = (0, 255, 0)
 thickness = 10
 
-img = cv2.imread("ex6.jpg")
+img = cv2.imread("../Box_images/doc_632_0_0.jpg")
 
 height = img.shape[0]
 width = img.shape[1]
 
-lower = np.array([0,50,180])
-upper = np.array([100,255,250])
-
 output = img.copy()
 
 img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-img = cv2.inRange(img, lower, upper)
+img = cv2.inRange(img, np.array([90, 20, 20]), np.array([140, 255, 255]))
 blurImg = cv2.GaussianBlur(img, (3,3), 0)
-
-edges = cv2.Canny(blurImg, 100, 250, apertureSize=3)
-
+kernel = np.ones((6, 6),np.uint8)
+img_morp = cv2.morphologyEx(blurImg, cv2.MORPH_CLOSE, kernel)
+edges = cv2.Canny(img_morp, 100, 250, apertureSize=3)
 lines = cv2.HoughLines(edges, 1, np.pi / 180, 200)
-r, theta = lines[14][0]
+r, theta = lines[4][0]
 cos = np.cos(theta)
 sin = np.sin(theta)
 x0 = cos * r
